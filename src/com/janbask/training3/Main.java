@@ -12,8 +12,11 @@ enum Spy { BLACK , WHITE }
 public class Main {
 
     volatile int share;
+
     int instance;
-    class Inner {}
+    class Inner {
+        final int testFinal = 23;
+    }
 
     interface TestInterface{
         public String testMethod();
@@ -30,11 +33,16 @@ public class Main {
                 return "This is a Test";
             }
         };
+        System.out.println(testInterface.getClass().getName());
         System.out.println("Is Interface: " + checkForInterface(testInterface.getClass()));
+        ReflectInterface reflectInterface = new ReflectInterfaceClass();
+        Class interfaceClass = ReflectInterface.class;
+        System.out.println("reflectInterface object -> Is Interface: " + checkForInterface(reflectInterface.getClass()));
+        System.out.println("ReflectInterface class -> Is Interface: " + checkForInterface(interfaceClass));
 
         //Check for array
         int[] integers = new int[10];
-        System.out.println("Is Array: " + checkForInterface(integers.getClass()));
+        System.out.println("Is Array: " + checkForArray(integers.getClass()));
 
         //check for primitive
         System.out.println("Is Primitive: " + checkForPrimitive(int.class));
@@ -58,11 +66,15 @@ public class Main {
         System.out.println("Enter the name of the filed for which you want to set value: ");
         String input = in.nextLine();
         try {
+            //ToDo: Make this logic dynamic so that if the user enters a string for numeric field it should show a message and ask for value again
             Field field = ReflectionExampleEx.class.getField(input);
             System.out.println("Enter the value that you want to set: ");
             String value = in.nextLine();
             ReflectionExampleEx ex = new ReflectionExampleEx();
-            field.set(ex,value);
+            if(field.getName()=="testField2")
+                field.set(ex,Integer.parseInt(value));
+            else
+                field.set(ex, value);
             System.out.println("The vlaue of the field is: " + field.get(ex));
         }
         catch (NoSuchFieldException e){
